@@ -1,0 +1,368 @@
+{
+  "info": {
+    "name": "Student Project and Team Collaboration Portal API",
+    "_postman_id": "c1f78990-2026-4b82-9901-portal-api-collection",
+    "description": "Comprehensive Postman test collection for testing all REST endpoints of the Student Project and Team Collaboration Portal.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "studentToken", "value": "" },
+    { "key": "facultyToken", "value": "" },
+    { "key": "projectId", "value": "1" },
+    { "key": "taskId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Kim\",\n  \"email\": \"david.kim@student.edu\",\n  \"password\": \"password123\",\n  \"role\": \"student\",\n  \"student_identifier\": \"STU-2026-005\",\n  \"technical_skills\": \"Go, Docker, Kubernetes, React\",\n  \"interests\": \"Cloud Native, Microservices\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login as Student (Alex)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex.johnson@student.edu\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Login as Faculty (Dr. Alan Turing)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"faculty.alan@university.edu\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Get Authenticated User Info",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Student Profile",
+      "item": [
+        {
+          "name": "Get Student Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/profile"
+          }
+        },
+        {
+          "name": "Update Student Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_identifier\": \"STU-2026-001\",\n  \"technical_skills\": \"React, Node.js, PostgreSQL, Docker, Next.js\",\n  \"interests\": \"Full Stack Web, Distributed Systems\"\n}"
+            },
+            "url": "{{baseUrl}}/profile"
+          }
+        },
+        {
+          "name": "Get All Students Directory",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/profile/students"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Projects",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Quantum Key Distribution Simulator\",\n  \"description\": \"Simulation of BB84 protocol with entangled photon pair polarization.\",\n  \"deadline\": \"2026-12-15\",\n  \"status\": \"In Progress\"\n}"
+            },
+            "url": "{{baseUrl}}/projects"
+          }
+        },
+        {
+          "name": "Get Accessible Projects",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/projects"
+          }
+        },
+        {
+          "name": "Get Project By ID (with members & stats)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Get Project Progress",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/projects/{{projectId}}/progress"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Teams & Invitations",
+      "item": [
+        {
+          "name": "Invite Student to Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 5\n}"
+            },
+            "url": "{{baseUrl}}/teams/{{projectId}}/invite"
+          }
+        },
+        {
+          "name": "Get Project Team Members",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/teams/{{projectId}}/members"
+          }
+        },
+        {
+          "name": "Get My Pending Invitations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/teams/invitations"
+          }
+        },
+        {
+          "name": "Accept or Decline Invitation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"accepted\"\n}"
+            },
+            "url": "{{baseUrl}}/teams/invitations/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Tasks & Kanban",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_id\": 1,\n  \"title\": \"Implement Real-Time Telemetry Stream\",\n  \"description\": \"Websocket broadcast of LiDAR point cloud frames.\",\n  \"assigned_to\": 4,\n  \"priority\": \"High\",\n  \"status\": \"To Do\",\n  \"deadline\": \"2026-11-20\"\n}"
+            },
+            "url": "{{baseUrl}}/tasks"
+          }
+        },
+        {
+          "name": "Get Project Tasks",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/tasks/project/{{projectId}}"
+          }
+        },
+        {
+          "name": "Update Task Status (Kanban Move)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}"
+            },
+            "url": "{{baseUrl}}/tasks/{{taskId}}/status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Task Comments",
+      "item": [
+        {
+          "name": "Add Comment to Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comment_text\": \"LiDAR dataset preprocessing finished with 94% filtering efficiency.\"\n}"
+            },
+            "url": "{{baseUrl}}/comments/task/{{taskId}}"
+          }
+        },
+        {
+          "name": "Get Task Comments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/comments/task/{{taskId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Milestones",
+      "item": [
+        {
+          "name": "Create Project Milestone",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_id\": 1,\n  \"title\": \"Phase 4: Field Testing Demonstration\",\n  \"description\": \"Real-world obstacle detection track trial.\",\n  \"target_date\": \"2026-12-05\",\n  \"status\": \"Pending\"\n}"
+            },
+            "url": "{{baseUrl}}/milestones"
+          }
+        },
+        {
+          "name": "Get Project Milestones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/milestones/project/{{projectId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Resources (Documents & Links)",
+      "item": [
+        {
+          "name": "Add Project URL Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_id\": 1,\n  \"title\": \"ROS2 Navigation Stack Docs\",\n  \"url\": \"https://navigation.ros.org\"\n}"
+            },
+            "url": "{{baseUrl}}/resources/links"
+          }
+        },
+        {
+          "name": "Get Project Links",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/resources/links/project/{{projectId}}"
+          }
+        },
+        {
+          "name": "Get Project Documents",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/resources/documents/project/{{projectId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Faculty Review & Monitoring",
+      "item": [
+        {
+          "name": "Get Monitored Projects (Faculty)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{facultyToken}}" }],
+            "url": "{{baseUrl}}/faculty/projects"
+          }
+        },
+        {
+          "name": "Inspect Project Audit Data (Faculty)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{facultyToken}}" }],
+            "url": "{{baseUrl}}/faculty/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Submit Faculty Review Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{facultyToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feedback\": \"Milestone 2 progress looks excellent. Please double-check latency on the LiDAR pipeline before Phase 3 bench testing.\"\n}"
+            },
+            "url": "{{baseUrl}}/faculty/projects/{{projectId}}/reviews"
+          }
+        }
+      ]
+    }
+  ]
+}
