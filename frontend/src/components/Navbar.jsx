@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Users, LayoutDashboard, UserCheck, LogOut, FolderGit2, BookOpen } from 'lucide-react';
+import { Users, LayoutDashboard, UserCheck, LogOut, FolderGit2, BookOpen, RotateCcw } from 'lucide-react';
 
 export default function Navbar({ activePage, setActivePage, selectedProjectId, setSelectedProjectId }) {
   const { user, logout } = useAuth();
+  const [resetting, setResetting] = useState(false);
+
+  const handleResetData = async () => {
+    if (!confirm('Reset database to clean, pre-seeded dummy projects and tasks?')) return;
+    try {
+      setResetting(true);
+      const res = await fetch('/api/seed', { method: 'POST' });
+      const data = await res.json();
+      alert(data.message || 'Database reset successfully!');
+      window.location.reload();
+    } catch (err) {
+      alert('Reset failed: ' + err.message);
+    } finally {
+      setResetting(false);
+    }
+  };
 
   const handleNav = (page) => {
     setActivePage(page);
@@ -114,6 +130,17 @@ export default function Navbar({ activePage, setActivePage, selectedProjectId, s
               )}
             </div>
           </div>
+
+          <button
+            onClick={handleResetData}
+            className="btn btn-secondary btn-sm"
+            title="Reset Database with Fresh Dummy Data"
+            disabled={resetting}
+            style={{ fontSize: '0.75rem', gap: '4px', padding: '5px 10px' }}
+          >
+            <RotateCcw size={14} className={resetting ? 'animate-spin' : ''} />
+            <span>{resetting ? 'Resetting...' : 'Reset Demo Data'}</span>
+          </button>
 
           <button
             onClick={logout}

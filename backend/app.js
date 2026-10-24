@@ -32,6 +32,21 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Seed endpoint for resetting or populating dummy data
+app.post('/api/seed', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const { exec } = require('./database/db');
+    const seedPath = path.join(__dirname, '../database/seed.sql');
+    const seedSql = fs.readFileSync(seedPath, 'utf8');
+    await exec(seedSql);
+    res.json({ message: 'Database successfully re-seeded with rich dummy data.' });
+  } catch (err) {
+    console.error('Seed error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Route registration
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);

@@ -76,6 +76,17 @@ async function query(text, params = []) {
   }
 }
 
+async function exec(sql) {
+  if (!dbDriver) {
+    await initializeDatabase();
+  }
+  if (dbDriver === 'pg') {
+    return await pgPool.query(sql);
+  } else {
+    return await pgliteInstance.exec(sql);
+  }
+}
+
 async function ensureSchema() {
   try {
     const checkTable = await query(
@@ -114,6 +125,7 @@ async function ensureSchema() {
 
 module.exports = {
   query,
+  exec,
   initializeDatabase,
   getDriver: () => dbDriver
 };
